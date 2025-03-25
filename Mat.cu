@@ -4,7 +4,7 @@
 __global__ void printHello()
 {
     int index = threadIdx.x + blockIdx.x * blockDim.x;
-    printf("Hello GPU by thread:%d",index);
+    printf("Hello GPU by thread:%d\n", index);
 }
 int main()
 {
