@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<cuda.h>
 
-__global void printHello()
+__global__ void printHello()
 {
     int index = threadIdx.x + blockIdx.x * blockDim.x;
     printf("Hello GPU by thread:%d",index);
