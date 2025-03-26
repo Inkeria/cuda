@@ -37,12 +37,13 @@ int main()
     }
     float *dA;
     cudaMalloc((void **)&dA, n * sizeof(float));
+    printf("%f\n",A[0]);
     cudaMemcpy(A, dA, n * sizeof(float), cudaMemcpyHostToDevice);
 
     // dim3 grid_dim(1, 1, 1);
     // dim3 block_dim(1024, 1, 1);
     // reduce<1024><<<grid_dim, block_dim>>>(dA, n);
 
-    // cudaMemcpy(dA, ans, sizeof(float), cudaMemcpyDeviceToHost);
-    printf("%f\n",dA[0]);
+    cudaMemcpy(dA, A, n * sizeof(float), cudaMemcpyDeviceToHost);
+    printf("%f\n",A[0]);
 }
