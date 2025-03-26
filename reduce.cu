@@ -22,7 +22,7 @@ __global__ void reduce(float *A, int n)
             }
             __syncthreads();
         }
-        // if(threadIdx.x == 0) ans = shareMem[threadIdx.x];
+        if(threadIdx.x == 0) A[threadIdx.x] = shareMem[threadIdx.x];
     }
 }
 
