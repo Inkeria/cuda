@@ -47,7 +47,7 @@ __global__ void shfl_reduce(float *A, int n)
     shareMem[threadIdx.x] = tmp;
     __syncthreads();
     __shared__ float val[32];
-    tmp = 0;
+    tmp = shareMem[threadIdx.x];
     tmp += __shfl_down_sync(0xffffffff, tmp, 16);
     tmp += __shfl_down_sync(0xffffffff, tmp, 8);
     tmp += __shfl_down_sync(0xffffffff, tmp, 4);
