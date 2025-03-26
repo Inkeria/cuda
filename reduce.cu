@@ -7,10 +7,10 @@ __global__ void reduce(float *A, int n)
 {
     __shared__ float shareMem[BLOCK_DIM];
     float tmp = 0;
-    printf("now run on GPU tread:%d\n",threadIdx.x);
-    __syncthreads();
-    if(threadIdx.x < BLOCK_DIM)
-    {
+    // printf("now run on GPU tread:%d\n",threadIdx.x);
+    // __syncthreads();
+    // if(threadIdx.x < BLOCK_DIM)
+    // {
         // printf("now run on GPU tread:%d\n",threadIdx.x);
         // __syncthreads();
         for(int id = threadIdx.x; id < n;id += BLOCK_DIM)
@@ -26,12 +26,13 @@ __global__ void reduce(float *A, int n)
             }
             __syncthreads();
         }
+        if(blockIdx.x == 0)
         A[threadIdx.x] = shareMem[threadIdx.x];
-    }
-    else {
-        printf("now not run on GPU tread:%d\n",threadIdx.x);
-        __syncthreads();
-    }
+    // }
+    // else {
+        // printf("now not run on GPU tread:%d\n",threadIdx.x);
+        // __syncthreads();
+    // }
 }
 
 int main()
@@ -43,16 +44,16 @@ int main()
     for(int i = 0;i < n; ++i){
         A[i] = (n - i + 1) * 1e-2;
     }
-    float *dA;
+    float *dA, *ans;
     cudaMalloc((void **)&dA, n * sizeof(float));
     printf("%f\n",A[0]);
-    cudaMemcpy(A, dA, n * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(dA, A, n * sizeof(float), cudaMemcpyHostToDevice);
 
     dim3 grid_dim(100, 1, 1);
     dim3 block_dim(1024, 1, 1);
     reduce<1024><<<grid_dim, block_dim>>>(dA, n);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(dA, A, n * sizeof(float), cudaMemcpyDeviceToHost);
-    printf("%f\n",A[0]);
+    cudaMemcpy(ans, dA, sizeof(float), cudaMemcpyDeviceToHost);
+    printf("%f\n",*ans);
 }
