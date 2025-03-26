@@ -22,13 +22,13 @@ __global__ void reduce(float *A, int n)
             }
             __syncthreads();
         }
-        if(threadIdx.x == 0) A[threadIdx.x] = shareMem[threadIdx.x];
+        A[threadIdx.x] = shareMem[threadIdx.x];
     }
 }
 
 int main()
 {
-    float *A, *ans;
+    float *A;
     const int n = 102400;
     A = (float*) malloc(n * sizeof(float));
     ans = (float *) malloc(sizeof(float));
