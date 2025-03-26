@@ -42,7 +42,7 @@ int main()
     A = (float*) malloc(n * sizeof(float));
     // ans = (float *) malloc(sizeof(float));
     for(int i = 0;i < n; ++i){
-        A[i] = (n - i + 1) * 1e-2;
+        A[i] = (n % (i + 1)) * 1e-2;
     }
     float *dA, *ans;
     cudaMalloc((void **)&dA, n * sizeof(float));
