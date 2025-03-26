@@ -67,7 +67,7 @@ __global__ void shfl_reduce(float *A, int n)
         tmp += __shfl_down_sync(0xffffffff, tmp, 1);
     }
     __syncthreads();
-    if(blockIdx.x == 0){
+    if(threadIdx.x == 0){
         A[0] = tmp;
     }
 }
