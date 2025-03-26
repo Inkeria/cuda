@@ -6,7 +6,7 @@ double get_time()
 {
     struct timeval tp;
     gettimeofday(&tp, NULL);
-    return (double) (tp.tv_sec + tp.tv_usec*1e-6);
+    return (double)(tp.tv_sec + tp.tv_usec * 1e-6);
 }
 
 __global__ void addKernel(float *A, float *B, float *C, int n)
@@ -28,7 +28,7 @@ void initCpu(float *hostA, float *hostB, int n)
 int main()
 {
     float *hostA, *hostB, *hostC, *ddvvC;
-    const int n = 102400;
+    int n = 102400;
     // const int N = n * sizeof(float);
     hostA = (float *) malloc(n * sizeof(float));
     hostB = (float *) malloc(n * sizeof(float));
