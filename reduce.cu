@@ -7,10 +7,12 @@ __global__ void reduce(float *A, int n)
 {
     __shared__ float shareMem[BLOCK_DIM];
     float tmp = 0;
+    printf("now run on GPU tread:%d\n",threadIdx.x);
+    __syncthreads();
     if(threadIdx.x < BLOCK_DIM)
     {
-        printf("now run on GPU tread:%d\n",threadIdx.x);
-        __syncthreads();
+        // printf("now run on GPU tread:%d\n",threadIdx.x);
+        // __syncthreads();
         for(int id = threadIdx.x; id < n;id += BLOCK_DIM)
         {
             tmp = tmp + A[id];
@@ -26,10 +28,10 @@ __global__ void reduce(float *A, int n)
         }
         A[threadIdx.x] = shareMem[threadIdx.x];
     }
-    else {
-        printf("now not run on GPU tread:%d\n",threadIdx.x);
-        __syncthreads();
-    }
+    // else {
+    //     printf("now not run on GPU tread:%d\n",threadIdx.x);
+    //     __syncthreads();
+    // }
 }
 
 int main()
