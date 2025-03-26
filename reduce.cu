@@ -2,9 +2,7 @@
 #include<sys/time.h>
 #include<cuda.h>
 
-__global__ float ans;
-
-templet<int BLOCK_DIM>
+template<int BLOCK_DIM>
 __global__ void reduce(float *A, int n)
 {
     __shared__ float shareMem[BLOCK_DIM];
@@ -24,15 +22,16 @@ __global__ void reduce(float *A, int n)
             }
             __syncthreads();
         }
-        if(threadIdx.x == 0) ans = shareMem[threadIdx.x];
+        // if(threadIdx.x == 0) ans = shareMem[threadIdx.x];
     }
 }
 
 int main()
 {
-    float *A;
+    float *A, *ans;
     const int n = 102400;
     A = (float*) malloc(n * sizeof(float));
+    ans = (float *) malloc(sizeof(float));
     for(int i = 0;i < n; ++i){
         A[i] = (n % (i + 1)) * 1e-1; 
     }
@@ -44,5 +43,6 @@ int main()
     dim3 block_dim(1024, 1, 1);
     reduce<1024><<<grid_dim, block_dim>>>(dA, n);
 
-    printf("%f\n",ans);
+    cudaMemcpy(dA, ans, sizeof(float), cudaMemcpyDeviceToHost);
+    printf("%f\n",*ans);
 }
