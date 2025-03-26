@@ -35,6 +35,43 @@ __global__ void reduce(float *A, int n)
     // }
 }
 
+template<int BLOCK_DIM>
+__global__ void shfl_reduce(float *A, int n)
+{
+    __shared__ float shareMem[BLOCK_DIM];
+    float tmp = 0;
+    for(int id = threadIdx.x; id < n;id += BLOCK_DIM)
+    {
+        tmp = tmp + A[id];
+    }
+    shareMem[threadIdx.x] = tmp;
+    __syncthreads();
+    __shared__ float half_reduce[32];
+    tmp = 0;
+    tmp += __shfl_down_sync(0xffffffff, tmp, 16);
+    tmp += __shfl_down_sync(0xffffffff, tmp, 8);
+    tmp += __shfl_down_sync(0xffffffff, tmp, 4);
+    tmp += __shfl_down_sync(0xffffffff, tmp, 2);
+    tmp += __shfl_down_sync(0xffffffff, tmp, 1);
+    if(threadIdx.x >> 5 & 1){
+        val[threadIdx.x >> 5] = tmp;
+    }
+    __syncthreads();
+    if(threadIdx.x < 32)
+    {
+        tmp = val[threadIdx.x];
+        tmp += __shfl_down_sync(0xffffffff, tmp, 16);
+        tmp += __shfl_down_sync(0xffffffff, tmp, 8);
+        tmp += __shfl_down_sync(0xffffffff, tmp, 4);
+        tmp += __shfl_down_sync(0xffffffff, tmp, 2);
+        tmp += __shfl_down_sync(0xffffffff, tmp, 1);
+    }
+    __syncthreads();
+    if(blockIdx.x == 0){
+        A[0] = tmp;
+    }
+}
+
 int main()
 {
     float *A;
@@ -52,7 +89,7 @@ int main()
 
     dim3 grid_dim(100, 1, 1);
     dim3 block_dim(1024, 1, 1);
-    reduce<1024><<<grid_dim, block_dim>>>(dA, n);
+    shfl_reduce<1024><<<grid_dim, block_dim>>>(dA, n);
     cudaDeviceSynchronize();
 
     cudaMemcpy(ans, dA, sizeof(float), cudaMemcpyDeviceToHost);
