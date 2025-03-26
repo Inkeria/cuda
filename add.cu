@@ -74,7 +74,7 @@ int main()
     cudaFree(deviceB);
     cudaFree(deviceC);
     double gpu_time = get_time() - st;
-    printf("kernel_time:%.6f \n", kernel_time);
+    printf("kernel_time:%.6f \n", kernel_time/1000);
     printf("cpu_time:%.6f \n gpu_time:%.6f\n",cpu_time ,gpu_time);
     
     free(hostA);
