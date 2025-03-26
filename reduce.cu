@@ -7,8 +7,8 @@ __global__ void reduce(float *A, int n)
 {
     __shared__ float shareMem[BLOCK_DIM];
     float tmp = 0;
-    // printf("now run on GPU tread:%d\n",threadIdx.x);
-    // __syncthreads();
+    printf("now run on GPU tread:%d\n",threadIdx.x);
+    __syncthreads();
     if(threadIdx.x < BLOCK_DIM)
     {
         // printf("now run on GPU tread:%d\n",threadIdx.x);
