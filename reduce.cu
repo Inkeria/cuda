@@ -33,14 +33,14 @@ int main()
     A = (float*) malloc(n * sizeof(float));
     ans = (float *) malloc(sizeof(float));
     for(int i = 0;i < n; ++i){
-        A[i] = i * 1e-1; 
+        A[i] = (n - i + 1) * 1e-1; 
     }
     float *dA;
     cudaMalloc((void **)&dA, n * sizeof(float));
     cudaMemcpy(A, dA, n * sizeof(float), cudaMemcpyHostToDevice);
 
-    dim3 grid_dim(1, 1, 1);
-    dim3 block_dim(1024, 1, 1);
+    // dim3 grid_dim(1, 1, 1);
+    // dim3 block_dim(1024, 1, 1);
     // reduce<1024><<<grid_dim, block_dim>>>(dA, n);
 
     cudaMemcpy(dA, ans, sizeof(float), cudaMemcpyDeviceToHost);
