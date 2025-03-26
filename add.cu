@@ -20,12 +20,13 @@ __global__ void addKernel(float *A, float *B, float *C, int n)
 
 int main()
 {
-    float *hostA, *hostB, *hostC;
+    float *hostA, *hostB, *hostC, *ddvvC;
     const int n = 102400;
     const int N = n * sizeof(float);
     hostA = (float *) malloc(N);
     hostB = (float *) malloc(N);
     hostC = (float *) malloc(N);
+    ddvvC = (float *) malloc(N);
     memset(hostA, 0x3f, N);
     memset(hostB, 0x3f, N);
     double st = get_time();
@@ -60,12 +61,17 @@ int main()
     cudaEventSynchronize(stop);
 
     cudaEventElapsedTime(&kernel_time, start, stop);
-    cudaMemcpy(hostC, deviceC, N, cudaMemcpyDeviceToHost);
+    cudaMemcpy(ddvvC, deviceC, N, cudaMemcpyDeviceToHost);
     cudaFree(deviceA);
     cudaFree(deviceB);
     cudaFree(deviceC);
     double gpu_time = get_time() - st;
     printf("kernel_time:%.6f \n", kernel_time);
     printf("cpu_time:%.6f gpu_time:%.6f",cpu_time ,gpu_time);
+    
+    free(hostA);
+    free(hostB);
+    free(hostC);
+    free(ddvvC);
     return 0;
 }
