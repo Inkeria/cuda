@@ -2,6 +2,13 @@
 #include<cuda.h>
 #include<sys/time.h>
 
+double get_time()
+{
+    timeval tp;
+    gettimeofday(&tp, NULL);
+    return (double) (tp.tv_sec + tp.tv_usec*1e-6);
+}
+
 __global__ void addKernel(float *deviceA, float *deviceB, float *deviceC, int n)
 {
     int index = threadIdx.x + blockIdx.x * blockDim.x;
@@ -19,6 +26,14 @@ int main()
     hostA = (float *) malloc(N);
     hostB = (float *) malloc(N);
     hostC = (float *) malloc(N);
+    memset(hostA, 0x3f, N);
+    memset(hostB, 0x3f, N);
+    double st = get_time();
+    for(int i = 0;i < n;++i){
+        hostC[i] = hostA[i] + hostB[i] + hostC[i];
+    }
+    double cpu_time = get_time() - st;
+    st = get_time();
     float *deviceA, *deviceB, *deviceC;
     cudaMalloc((void **)&deviceA, N);
     cudaMalloc((void **)&deviceB, N);
@@ -49,7 +64,8 @@ int main()
     cudaFree(deviceA);
     cudaFree(deviceB);
     cudaFree(deviceC);
-
-    printf("kernel_time:%f \n", kernel_time);
+    double gpu_time = get_time() - st;
+    printf("kernel_time:%.6f \n", kernel_time);
+    printf("cpu_time:%.6f gpu_time:%.6f",cpu_time ,gpu_time);
     return 0;
 }
