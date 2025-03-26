@@ -4,9 +4,9 @@
 
 double get_time()
 {
-    struct timeval tp;
+    timeval tp;
     gettimeofday(&tp, NULL);
-    return (double)(tp.tv_sec + tp.tv_usec * 1e-6);
+    return (double) (tp.tv_sec + tp.tv_usec*1e-6);
 }
 
 __global__ void addKernel(float *A, float *B, float *C, int n)
@@ -17,24 +17,16 @@ __global__ void addKernel(float *A, float *B, float *C, int n)
         C[index] = A[index] + B[index];
     }
 }
-void initCpu(float *hostA, float *hostB, int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        hostA[i] = 1;
-        hostB[i] = 1;
-    }
-}
+
 int main()
 {
     float *hostA, *hostB, *hostC, *ddvvC;
-    int n = 102400;
-    // const int N = n * sizeof(float);
-    hostA = (float *) malloc(n * sizeof(float));
-    hostB = (float *) malloc(n * sizeof(float));
-    hostC = (float *) malloc(n * sizeof(float));
-    ddvvC = (float *) malloc(n * sizeof(float));
-    initCpu(hostA, hostB, n);
+    const int n = 102400;
+    const int N = n * sizeof(float);
+    hostA = (float *) malloc(N);
+    hostB = (float *) malloc(N);
+    hostC = (float *) malloc(N);
+    ddvvC = (float *) malloc(N);
     // memset(hostA, 0x3f, N);
     // memset(hostB, 0x3f, N);
     double st = get_time();
@@ -44,12 +36,12 @@ int main()
     double cpu_time = get_time() - st;
     st = get_time();
     float *deviceA, *deviceB, *deviceC;
-    cudaMalloc((void **)&deviceA, n * sizeof(float));
-    cudaMalloc((void **)&deviceB, n * sizeof(float));
-    cudaMalloc((void **)&deviceC, n * sizeof(float));
+    cudaMalloc((void **)&deviceA, N);
+    cudaMalloc((void **)&deviceB, N);
+    cudaMalloc((void **)&deviceC, N);
 
-    cudaMemcpy(deviceA, hostA, n * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(deviceB, hostB, n * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceA, hostA, N, cudaMemcpyHostToDevice);
+    cudaMemcpy(deviceB, hostB, N, cudaMemcpyHostToDevice);
 
     cudaEvent_t start, stop;
     float kernel_time = 0;
@@ -69,12 +61,12 @@ int main()
     cudaEventSynchronize(stop);
 
     cudaEventElapsedTime(&kernel_time, start, stop);
-    cudaMemcpy(ddvvC, deviceC, n * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(ddvvC, deviceC, N, cudaMemcpyDeviceToHost);
     cudaFree(deviceA);
     cudaFree(deviceB);
     cudaFree(deviceC);
     double gpu_time = get_time() - st;
-    printf("kernel_time:%.6f \n", kernel_time/1000);
+    printf("kernel_time:%.6f \n", kernel_time / 1000);
     printf("cpu_time:%.6f \n gpu_time:%.6f\n",cpu_time ,gpu_time);
     
     free(hostA);
