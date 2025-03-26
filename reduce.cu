@@ -45,6 +45,7 @@ int main()
         A[i] = (n - i + 1) * 1e-2;
     }
     float *dA, *ans;
+    ans = (float *) malloc(sizeof(float));
     cudaMalloc((void **)&dA, n * sizeof(float));
     printf("%f\n",A[0]);
     cudaMemcpy(dA, A, n * sizeof(float), cudaMemcpyHostToDevice);
