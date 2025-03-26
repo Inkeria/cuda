@@ -54,6 +54,6 @@ int main()
     reduce<1024><<<grid_dim, block_dim>>>(dA, n);
     cudaDeviceSynchronize();
 
-    cudaMemcpy(ans, dA, sizeof(float), cudaMemcpyDeviceToHost);
-    printf("%f\n",*ans);
+    cudaMemcpy(A, dA, n * sizeof(float), cudaMemcpyDeviceToHost);
+    printf("%f\n",A[0]);
 }
