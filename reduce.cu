@@ -47,7 +47,7 @@ int main()
     float *dA, *ans;
     ans = (float *) malloc(sizeof(float));
     cudaMalloc((void **)&dA, n * sizeof(float));
-    printf("%f\n",A[0]);
+    // printf("%f\n",A[0]);
     cudaMemcpy(dA, A, n * sizeof(float), cudaMemcpyHostToDevice);
 
     dim3 grid_dim(100, 1, 1);
@@ -56,5 +56,7 @@ int main()
     cudaDeviceSynchronize();
 
     cudaMemcpy(ans, dA, sizeof(float), cudaMemcpyDeviceToHost);
+    for(int i = 1;i < n;++i) A[0] += A[i];
     printf("%f\n",*ans);
+    printf("%f\n",*A);
 }
