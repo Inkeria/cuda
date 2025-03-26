@@ -27,8 +27,8 @@ int main()
     hostB = (float *) malloc(N);
     hostC = (float *) malloc(N);
     ddvvC = (float *) malloc(N);
-    memset(hostA, 0x3f, N);
-    memset(hostB, 0x3f, N);
+    // memset(hostA, 0x3f, N);
+    // memset(hostB, 0x3f, N);
     double st = get_time();
     for(int i = 0;i < n;++i){
         hostC[i] = hostA[i] + hostB[i] + hostC[i];
@@ -67,7 +67,7 @@ int main()
     cudaFree(deviceC);
     double gpu_time = get_time() - st;
     printf("kernel_time:%.6f \n", kernel_time);
-    printf("cpu_time:%.6f gpu_time:%.6f",cpu_time ,gpu_time);
+    printf("cpu_time:%.6f \n gpu_time:%.6f\n",cpu_time ,gpu_time);
     
     free(hostA);
     free(hostB);
