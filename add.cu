@@ -9,12 +9,12 @@ double get_time()
     return (double) (tp.tv_sec + tp.tv_usec*1e-6);
 }
 
-__global__ void addKernel(float *deviceA, float *deviceB, float *deviceC, int n)
+__global__ void addKernel(float *A, float *B, float *C, int n)
 {
     int index = threadIdx.x + blockIdx.x * blockDim.x;
     if(index < n)
     {
-        deviceC[index] = deviceA[index] + deviceB[index] + deviceC[index];
+        C[index] = A[index] + B[index];
     }
 }
 
