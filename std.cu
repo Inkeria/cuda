@@ -64,6 +64,7 @@ int main()
     int num_block_y = 1;
     dim3 grid_dim(num_block_x, num_block_y, 1);
     dim3 block_dim(BLOCK_DIM, 1, 1);
+    
     addKernel<<<grid_dim, block_dim>>>(dA, dB, dC, n);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
