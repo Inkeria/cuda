@@ -41,7 +41,7 @@ int main()
 
     dim3 grid_dim(1, 1, 1);
     dim3 block_dim(1024, 1, 1);
-    reduce<1024><<<grid_dim, block_dim>>>(dA, n);
+    // reduce<1024><<<grid_dim, block_dim>>>(dA, n);
 
     cudaMemcpy(dA, ans, sizeof(float), cudaMemcpyDeviceToHost);
     printf("%f\n",*ans);
